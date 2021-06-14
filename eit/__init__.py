@@ -1,2 +1,2 @@
 from .fem import *
-# from .eit import *
+from .eit import *
