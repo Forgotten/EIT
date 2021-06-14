@@ -4,13 +4,15 @@ This is a python implementation of a optimization-based estimation of the EIT pr
 
 ## Requirements: 
 
--numpy
+-numpy (with MKL backend)
 
 -scipy 
 
-(to add more here)
+-numba 
 
-For some of the examples we will use the h5py library to extract the data (already contained in the tests folder)
+-pypardiso
+
+For some of the examples the scipy.io library to extract the data (already contained in the tests folder)
 
 ## Installation
 
