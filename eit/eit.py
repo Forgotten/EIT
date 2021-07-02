@@ -161,11 +161,11 @@ def fill_array(idx, e, matrix):
 
 @numba.jit(void(int64[:,:], int64[:,:], float64[:,:], 
 				uint16[:,:],  float64[:,:], float64[:], int64),
-            nopython=True)
+            nopython=True, parallel=True)
 def fill_entries_matrix(idx_i, idx_j, vals, t, p, sigma_vec, size_t):
 
     # print(idx_i.shape)
-    for e in range(size_t):  # integration over one triangular element at a time
+    for e in numba.prange(size_t):  # integration over one triangular element at a time
         # row of t = node numbers of the 3 corners of triangle e
         nodes = t[e,:]
         # print(nodes)

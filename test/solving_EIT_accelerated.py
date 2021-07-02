@@ -8,7 +8,7 @@ import numpy.linalg as npla
 import scipy.sparse as spsp
 from scipy.optimize import Bounds
 from scipy.sparse.linalg import spsolve
-
+import time
 
 import scipy.optimize as op
 
@@ -69,15 +69,19 @@ bounds_r = [np.inf for _ in range(len(sigma_vec_0))]
 bounds = Bounds(bounds_l, bounds_r)
 
 # running the optimization routine
+t_i = time.time()
 res = op.minimize(J, sigma_vec_0, method='L-BFGS-B',
                    jac = True,
                    tol = opt_tol,
-                    bounds=bounds, 
+                   bounds=bounds, 
                    options={'maxiter': 200,
-                            'disp': True})
-
+                            'disp': False})
+t_f = time.time()
 # extracting guess from the resulting optimization 
 sigma_guess = res.x
+
+# we show the time it took to run the code
+print('Time elapsed in the optimization is %.4f [s]'%(t_f - t_i))
 
 # we proejct sigma back to V in order to plot it
 p_v_w = projection_v_w(v_h)
