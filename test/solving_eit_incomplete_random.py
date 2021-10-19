@@ -92,7 +92,7 @@ res = op.minimize(J, sigma_vec_0, method='L-BFGS-B',
                    jac = True,
                    tol = opt_tol,
                    bounds=bounds, 
-                   options={'maxiter': 400,
+                   options={'maxiter': 1000,
                             'disp': True})
 t_f = time.time()
 # extracting guess from the resulting optimization 
@@ -108,6 +108,12 @@ Mass = spsp.csr_matrix(mass_matrix(v_h))
 sigma_v = spsolve(Mass, p_v_w@sigma_guess)
 
 # create figure 
+plt.figure(figsize=(10,10))
+plt.spy(mask)
+plt.savefig("incomplete_random_fully_reconstruction_mask",
+            bbox_inches='tight')   # save the figure to file
+
+# create figure 
 plt.figure(figsize=(12,10))
 # create a triangulation object 
 triangulation = tri.Triangulation(p[:,0], p[:,1], t)
@@ -118,5 +124,6 @@ plt.tricontourf(triangulation, sigma_v)
 # plotting a colorbar
 plt.colorbar()
 # show
-plt.savefig("incomplete_random_reconstruction", bbox_inches='tight')   # save the figure to file
-plt.show()
+plt.savefig("incomplete_random_fully_reconstruction",
+            bbox_inches='tight')   # save the figure to file
+# plt.show()

@@ -55,14 +55,18 @@ num_non_zeros = np.sum(mat_contents['E'])
 mask = np.zeros(dtn_data.shape, dtype = np.int64)
 
 # random colums
-num_cols = np.int64(num_non_zeros/np.prod(mask.shape)*mask.shape[0])+1
-
+num_cols = (np.int64(num_non_zeros/np.prod(mask.shape)*mask.shape[0]))//2 + 4
+num_rows = num_cols
 
 cols_idx = np.random.choice(np.linspace(0,mask.shape[0]-1, 
                                         mask.shape[0]).astype(np.int64), 
                             num_cols, replace= False)
+rows_idx = np.random.choice(np.linspace(0,mask.shape[0]-1, 
+                                        mask.shape[0]).astype(np.int64), 
+                            num_rows, replace= False)
 # turning the selected columns to one
 mask[:,cols_idx] = 1
+mask[rows_idx,:] = 1
 
 # defining masked data
 dtn_masked_data = mask*dtn_data
@@ -119,7 +123,7 @@ sigma_v = spsolve(Mass, p_v_w@sigma_guess)
 # create figure 
 plt.figure(figsize=(10,10))
 plt.spy(mask)
-plt.savefig("incomplete_random_columns_reconstruction_mask",
+plt.savefig("incomplete_rows_cols_reconstruction_mask",
             bbox_inches='tight')   # save the figure to file
 
 
@@ -134,6 +138,6 @@ plt.tricontourf(triangulation, sigma_v)
 # plotting a colorbar
 plt.colorbar()
 # show
-plt.savefig("incomplete_random_columns_reconstruction",
+plt.savefig("incomplete_random_rows_cols_reconstruction",
             bbox_inches='tight')   # save the figure to file
 # plt.show()

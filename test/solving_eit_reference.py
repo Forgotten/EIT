@@ -1,5 +1,5 @@
-# Script that computes the reconstruction incomplete data 
-# which was obtained using a random mask 
+# Script that computes the reconstruction using the completed 
+# DtN map, which has already been computed somewhere else
 
 import context                  # to load the library without installing it 
 import scipy.io as sio
@@ -18,9 +18,6 @@ import os
 import sys
 
 from eit import *  
-
-# boolean for plotting 
-plot_bool = False
 
 # boolean for plotting 
 plot_bool = False
@@ -48,40 +45,21 @@ v_h = V_h(mesh)
 # extracting the DtN data
 dtn_data = mat_contents['DtN_i']
 
-# extracting the mask
-num_non_zeros = np.sum(mat_contents['E'])
-
-# masked data
-mask = np.zeros(dtn_data.shape, dtype = np.int64)
-
-# random colums
-num_cols = np.int64(num_non_zeros/np.prod(mask.shape)*mask.shape[0])+1
-
-
-cols_idx = np.random.choice(np.linspace(0,mask.shape[0]-1, 
-                                        mask.shape[0]).astype(np.int64), 
-                            num_cols, replace= False)
-# turning the selected columns to one
-mask[:,cols_idx] = 1
-
-# defining masked data
-dtn_masked_data = mask*dtn_data
-
 # this is the initial guess
 sigma_vec_0 = 1 + np.zeros(t.shape[0])
 
 # we create the eit wrapper
-eit = IncompleteEIT(v_h, mask)
+eit = EIT(v_h)
 
 # build the stiffness matrices
 eit.update_matrices(sigma_vec_0)
 
 # testing the loss and grad 
-loss, grad = eit.misfit(dtn_masked_data, sigma_vec_0)
+loss, grad = eit.misfit(dtn_data, sigma_vec_0)
 
 # simple optimization routine
 def J(x):
-    return eit.misfit(dtn_masked_data, x)
+    return eit.misfit(dtn_data, x)
 
 # we define a relatively high tolerance
 # recall that this is the square of the misfit
@@ -101,7 +79,7 @@ res = op.minimize(J, sigma_vec_0, method='L-BFGS-B',
                    jac = True,
                    tol = opt_tol,
                    bounds=bounds, 
-                   options={'maxiter': 1000,
+                   options={'maxiter': 2000,
                             'disp': True})
 t_f = time.time()
 # extracting guess from the resulting optimization 
@@ -116,12 +94,6 @@ Mass = spsp.csr_matrix(mass_matrix(v_h))
 
 sigma_v = spsolve(Mass, p_v_w@sigma_guess)
 
-# create figure 
-plt.figure(figsize=(10,10))
-plt.spy(mask)
-plt.savefig("incomplete_random_columns_reconstruction_mask",
-            bbox_inches='tight')   # save the figure to file
-
 
 # create figure 
 plt.figure(figsize=(12,10))
@@ -134,6 +106,5 @@ plt.tricontourf(triangulation, sigma_v)
 # plotting a colorbar
 plt.colorbar()
 # show
-plt.savefig("incomplete_random_columns_reconstruction",
-            bbox_inches='tight')   # save the figure to file
-# plt.show()
+plt.savefig("reference_reconstruction", bbox_inches='tight')   # save the figure to file
+plt.show()
