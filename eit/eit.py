@@ -140,6 +140,7 @@ def stiffness_matrix_numba(v_h, sigma_vec):
     idx_j = np.zeros((v_h.mesh.n_t, 9), dtype = np.int64)
     vals = np.zeros((v_h.mesh.n_t, 9), dtype = np.float64)
 
+    # we fill the entried with a numba jitted function
     fill_entries_matrix(idx_i, idx_j, vals, t, p, 
     					sigma_vec, np.int64(t.shape[0]))
 
