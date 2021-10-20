@@ -107,4 +107,19 @@ plt.tricontourf(triangulation, sigma_v)
 plt.colorbar()
 # show
 plt.savefig("reference_reconstruction", bbox_inches='tight')   # save the figure to file
-plt.show()
+#plt.show()
+
+
+# create figure 
+plt.figure(figsize=(12,10))
+# create a triangulation object 
+triangulation = tri.Triangulation(p[:,0], p[:,1], t)
+# plot the triangles
+# plt.triplot(triangulation, '-k')
+# plotting the solution 
+plt.tricontourf(triangulation, sigma_vec)
+# plotting a colorbar
+plt.colorbar()
+# show
+plt.savefig("reference_media", bbox_inches='tight')   # save the figure to file
+#plt.show()
