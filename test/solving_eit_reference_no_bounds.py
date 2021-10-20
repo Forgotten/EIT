@@ -76,7 +76,7 @@ opt_tol = 1e-12
 bdy_idx_set = set(bdy_idx)
 
 # creating the bounds
-bounds_l = [1. for _ in range(len(sigma_vec_0))]
+bounds_l = [1. if i in bdy_idx_set else 0 for i in range(len(sigma_vec_0))]
 bounds_r = [1. if i in bdy_idx_set else np.inf for i in range(len(sigma_vec_0))]
 bounds = Bounds(bounds_l, bounds_r)
 
@@ -113,7 +113,7 @@ plt.tricontourf(triangulation, sigma_v)
 # plotting a colorbar
 plt.colorbar()
 # show
-plt.savefig("reference_reconstruction", bbox_inches='tight')   # save the figure to file
+plt.savefig("reference_reconstruction_no_bounds", bbox_inches='tight')   # save the figure to file
 #plt.show()
 
 
