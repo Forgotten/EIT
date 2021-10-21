@@ -137,3 +137,10 @@ plt.colorbar()
 # show
 plt.savefig("incomplete_random_rank_sampling_reconstruction_no_bounds", bbox_inches='tight')   # save the figure to file
 # plt.show()
+
+# we save the data and the triangulation to plot it later
+dict_to_save = {'sigma': sigma_guess,  # sigma defined in each triangle
+                'sigma_v': sigma_v,
+                'mask': mask,
+                't': t, 'p': p}
+sio.savemat("incomp_rand_rank_samp_no_bounds.mat",dict_to_save)

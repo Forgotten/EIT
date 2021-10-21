@@ -122,3 +122,10 @@ plt.colorbar()
 # show
 plt.savefig("completed_reconstruction", bbox_inches='tight')   # save the figure to file
 # plt.show()
+
+
+# we save the data and the triangulation to plot it later
+dict_to_save = {'sigma': sigma_guess,  # sigma defined in each triangle
+                'sigma_v': sigma_v,
+                't': t, 'p': p}
+sio.savemat("completed_DtN.mat",dict_to_save)
