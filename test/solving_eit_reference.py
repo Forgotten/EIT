@@ -2,7 +2,12 @@
 # DtN map, which has already been computed somewhere else
 
 import context                  # to load the library without installing it 
-import scipy.io as sio
+import scipy.io as sio 
+
+# to save the plots witouht conencting to a display
+import matplotlib
+matplotlib.use('Agg')
+
 import matplotlib.pyplot as plt
 import matplotlib.tri as tri
 import numpy as np
@@ -95,8 +100,10 @@ res = op.minimize(J, sigma_vec_0, method='L-BFGS-B',
                    jac = True,
                    tol = opt_tol,
                    bounds=bounds, 
-                   options={'maxiter': 2000,
-                            'disp': True})
+                   options={'maxiter': 4000,
+                            'disp': True,
+                            'gtol':1e-12,
+                            'fps':1e-12})
 t_f = time.time()
 # extracting guess from the resulting optimization 
 sigma_guess = res.x

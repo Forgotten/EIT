@@ -3,6 +3,11 @@
 
 import context                  # to load the library without installing it 
 import scipy.io as sio
+
+# to save the plots witouht conencting to a display
+import matplotlib
+matplotlib.use('Agg')
+
 import matplotlib.pyplot as plt
 import matplotlib.tri as tri
 import numpy as np
@@ -98,7 +103,7 @@ for e in range(t.shape[0]):  # integration over one triangular element at a time
     nodes = t[e, :]
     if   (nodes[0] in bdy_idx_set)\
        + (nodes[1] in bdy_idx_set)\
-       + (nodes[2] in bdy_idx_set) >= 2:
+       + (nodes[2] in bdy_idx_set) >= 1:
         bounds.append((1, 1))
     else:
         bounds.append((1, np.inf))
@@ -109,8 +114,10 @@ res = op.minimize(J, sigma_vec_0, method='L-BFGS-B',
                    jac = True,
                    tol = opt_tol,
                    bounds=bounds, 
-                   options={'maxiter': 1000,
-                            'disp': True})
+                   options={'maxiter': 4000,
+                            'disp': True,
+                            'gtol':1e-12,
+                            'fps':1e-12})
 t_f = time.time()
 # extracting guess from the resulting optimization 
 sigma_guess = res.x
