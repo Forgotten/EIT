@@ -95,9 +95,15 @@ opt_tol = 1e-12
 bdy_idx_set = set(bdy_idx)
 
 # creating the bounds
-bounds_l = [1. for _ in range(len(sigma_vec_0))]
-bounds_r = [1. if i in bdy_idx_set else np.inf for i in range(len(sigma_vec_0))]
-bounds = Bounds(bounds_l, bounds_r)
+bounds = []
+for e in range(t.shape[0]):  # integration over one triangular element at a time
+    nodes = t[e, :]
+    if   (nodes[0] in bdy_idx_set)\
+       + (nodes[1] in bdy_idx_set)\
+       + (nodes[2] in bdy_idx_set) >= 2:
+        bounds.append((1, 1))
+    else:
+        bounds.append((1, np.inf))
 
 # running the optimization routine
 t_i = time.time()

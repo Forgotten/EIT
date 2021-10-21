@@ -30,6 +30,20 @@ class Mesh:
         self.bdy_idx = bdy_idx
         self.vol_idx = vol_idx
 
+        # boundary indices for the triangles in the 
+        # boundary 
+
+        # faster search in the for loop
+        bdy_idx_set = set(self.bdy_idx)
+        
+        self.bdy_idx_t = set()
+        for e in range(self.t.shape[0]):  # integration over one triangular element at a time
+            nodes = self.t[e, :]
+            if   (nodes[0] in bdy_idx_set)\
+               + (nodes[1] in bdy_idx_set)\
+               + (nodes[2] in bdy_idx_set) >= 2:
+                self.bdy_idx_t.add(e)
+
 
 class V_h:
     def __init__(self, mesh):

@@ -75,10 +75,17 @@ opt_tol = 1e-12
 # define a set of the bdy_indices
 bdy_idx_set = set(bdy_idx)
 
-# creating the bounds
-bounds_l = [1. if i in bdy_idx_set else 0 for i in range(len(sigma_vec_0))]
-bounds_r = [1. if i in bdy_idx_set else np.inf for i in range(len(sigma_vec_0))]
-bounds = Bounds(bounds_l, bounds_r)
+
+bounds = []
+for e in range(t.shape[0]):  # integration over one triangular element at a time
+    nodes = t[e, :]
+    if   (nodes[0] in bdy_idx_set)\
+       + (nodes[1] in bdy_idx_set)\
+       + (nodes[2] in bdy_idx_set) >= 2:
+        bounds.append((1, 1))
+    else:
+        bounds.append((0, np.inf))
+
 
 # running the optimization routine
 t_i = time.time()
@@ -86,7 +93,7 @@ res = op.minimize(J, sigma_vec_0, method='L-BFGS-B',
                    jac = True,
                    tol = opt_tol,
                    bounds=bounds, 
-                   options={'maxiter': 2000,
+                   options={'maxiter': 10000,
                             'disp': True})
 t_f = time.time()
 # extracting guess from the resulting optimization 
@@ -113,7 +120,7 @@ plt.tricontourf(triangulation, sigma_v)
 # plotting a colorbar
 plt.colorbar()
 # show
-plt.savefig("reference_reconstruction_no_bounds", bbox_inches='tight')   # save the figure to file
+plt.savefig("reference_reconstruction", bbox_inches='tight')   # save the figure to file
 #plt.show()
 
 
