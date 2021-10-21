@@ -120,7 +120,7 @@ plt.tricontourf(triangulation, sigma_v)
 # plotting a colorbar
 plt.colorbar()
 # show
-plt.savefig("reference_reconstruction", bbox_inches='tight')   # save the figure to file
+plt.savefig("reference_reconstruction_no_bounds", bbox_inches='tight')   # save the figure to file
 #plt.show()
 
 
