@@ -26,7 +26,8 @@ plot_bool = False
 plot_bool = False
 
 # loading the file containing the mesh
-mat_fname  = 'data/adaptive_completion_coarser_DtN_512.mat'
+# mat_fname  = 'data/adaptive_completion_coarser_DtN_512.mat'
+mat_fname  = 'data/completed_new_mesh.mat'
 mat_contents = sio.loadmat(mat_fname)
 
 # points

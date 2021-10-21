@@ -23,11 +23,12 @@ from eit import *
 plot_bool = False
 
 # loading the file containing the mesh
-mat_fname  = 'data/adaptive_completion_coarser_DtN_512.mat'
-sigma_fname  = 'data/sigma_vec.mat'
+# mat_fname  = 'data/adaptive_completion_coarser_DtN_512.mat'
+mat_fname  = 'data/completed_new_mesh.mat'
+# sigma_fname  = 'data/sigma_vec.mat'
 
 mat_contents = sio.loadmat(mat_fname)
-sigma_contents  = sio.loadmat(sigma_fname)
+# sigma_contents  = sio.loadmat(sigma_fname)
 
 
 # points
@@ -53,7 +54,9 @@ dtn_data = mat_contents['DtN_i']
 sigma_vec_0 = 1 + np.zeros(t.shape[0])
 
 # true perturbation
-sigma_vec = sigma_contents['sigma_vec']
+# sigma_vec = sigma_contents['sigma_vec']
+sigma_vec = mat_contents['sigma_vec']
+
 
 # we create the eit wrapper
 eit = EIT(v_h)

@@ -23,11 +23,12 @@ from eit import *
 plot_bool = False
 
 # loading the file containing the mesh
-mat_fname  = 'data/adaptive_completion_coarser_DtN_512.mat'
-sigma_fname  = 'data/sigma_vec.mat'
+# mat_fname  = 'data/adaptive_completion_coarser_DtN_512.mat'
+# sigma_fname  = 'data/sigma_vec.mat'
+mat_fname  = 'data/completed_new_mesh.mat'
 
 mat_contents = sio.loadmat(mat_fname)
-sigma_contents  = sio.loadmat(sigma_fname)
+# sigma_contents  = sio.loadmat(sigma_fname)
 
 
 # points
@@ -53,7 +54,8 @@ dtn_data = mat_contents['DtN_i']
 sigma_vec_0 = 1 + np.zeros(t.shape[0])
 
 # true perturbation
-sigma_vec = sigma_contents['sigma_vec']
+sigma_vec = mat_contents['sigma_vec']
+# sigma_vec = sigma_contents['sigma_vec']
 
 # we create the eit wrapper
 eit = EIT(v_h)
@@ -76,9 +78,16 @@ opt_tol = 1e-12
 bdy_idx_set = set(bdy_idx)
 
 # creating the bounds
-bounds_l = [1. for _ in range(len(sigma_vec_0))]
-bounds_r = [1. if i in bdy_idx_set else np.inf for i in range(len(sigma_vec_0))]
-bounds = Bounds(bounds_l, bounds_r)
+# creating the bounds
+bounds = []
+for e in range(t.shape[0]):  # integration over one triangular element at a time
+    nodes = t[e, :]
+    if   (nodes[0] in bdy_idx_set)\
+       + (nodes[1] in bdy_idx_set)\
+       + (nodes[2] in bdy_idx_set) >= 1:
+        bounds.append((1, 1))
+    else:
+        bounds.append((1, np.inf))
 
 # running the optimization routine
 t_i = time.time()
