@@ -117,7 +117,7 @@ res = op.minimize(J, sigma_vec_0, method='L-BFGS-B',
                    jac = True,
                    tol = opt_tol,
                    bounds=bounds, 
-                   options={'maxiter': 4000,
+                   options={'maxiter': 10000,
                             'disp': True,
                             'gtol':1e-12,
                             'fps':1e-12})
