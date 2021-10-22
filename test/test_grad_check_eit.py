@@ -1,3 +1,6 @@
+"""Script to check that the gradient produces by the computation
+	 within the EIT class is correct
+"""
 import context
 import scipy.io as sio
 import matplotlib.pyplot as plt
@@ -40,10 +43,17 @@ v_h = V_h(mesh)
 sigma_vec = mat_contents['sigma_vec'].astype(np.float64)
 sigma_vec_0 = mat_contents['sigma_0'].astype(np.float64).reshape((-1,))
 
+# extract the dtn map
 dtn_data = mat_contents['DtN'].astype(np.float64)
 
-# computing misfit and grad
-misfit, grad = misfit_sigma(v_h, dtn_data, sigma_vec_0)
+# we create the eit wrapper
+eit = EIT(v_h)
+
+# build the stiffness matrices
+eit.update_matrices(sigma_vec_0)
+
+# testing the loss and grad 
+loss, grad = eit.misfit(dtn_data, sigma_vec_0)
 
 # the reference grad
 grad_ref = mat_contents['grad']
@@ -51,6 +61,7 @@ grad_ref = mat_contents['grad']
 # the reference misfit
 misfit_ref = mat_contents['l2']
 
+# computing the error with respect to the reference gradient
 err_grad = grad-grad_ref.reshape((-1,))
 
 assert npla.norm(err_grad)/npla.norm(grad_ref.reshape((-1,))) < 1.e-12
@@ -59,11 +70,13 @@ print("Error with respect to the reference gradient is %.4e" % npla.norm(err_gra
 assert np.abs(misfit - misfit_ref) < 1.e-12
 print("Error with respect to the reference misfit is %.4e" % np.abs(misfit - misfit_ref))
 
-# 
+# computing the DtN map
 dtn, sol = dtn_map(v_h, sigma_vec)
 
+# extracting the reference DtN map
 dtn_ref = mat_contents['DtN']	
 
+# computing the relative error of the DtN map
 err_DtN_vec = dtn - dtn_ref
 err_DtN = npla.norm(err_DtN_vec.reshape((-1,)))/npla.norm(dtn_ref.reshape((-1,)))
 
@@ -87,10 +100,10 @@ if check_grad:
 
 	# this is very inefficient
 	def misfit_fn(sigma):
-		return misfit_simple(v_h, dtn_data, sigma)
+		return eit.misfit(dtn_data, sigma)[0]
 
 	def grad_fn(sigma):
-		return misfit_sigma(v_h, dtn_data, sigma)[1]
+		return eit.misfit(dtn_data, sigma)[1]
 
 	err = op.check_grad(misfit_fn, grad_fn, sigma_vec_0)
 
@@ -99,7 +112,7 @@ if check_grad:
 
 # simple optimization routine
 def J(x):
-	return misfit_sigma(v_h, dtn_data, x)
+	return eit.misfit(dtn_data, x)
 
 # we define a relatively high tolerance
 # recall that this is the square of the misfit
