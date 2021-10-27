@@ -45,7 +45,7 @@ sigma_vec_0 = 1 + np.zeros(t.shape[0])
 
 l2_err, grad = misfit_sigma(v_h, dtn_data, sigma_vec_0)
 
-assert(np.abs(1.112862432005899e-04- l2_err) < 1.e-8)
+assert(np.abs(1.112862432005899e-04-l2_err) < 1.e-8)
 
 # simple optimization routine
 def J(x):

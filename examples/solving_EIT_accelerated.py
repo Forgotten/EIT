@@ -98,4 +98,4 @@ plt.tricontourf(triangulation, sigma_v)
 # plotting a colorbar
 plt.colorbar()
 # show
-plt.show()
+# plt.show()

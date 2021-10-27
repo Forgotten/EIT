@@ -90,9 +90,9 @@ for e in range(t.shape[0]):  # integration over one triangular element at a time
     if   (nodes[0] in bdy_idx_set)\
        + (nodes[1] in bdy_idx_set)\
        + (nodes[2] in bdy_idx_set) >= 1:
-        bounds.append((1, 1))
+        bounds.append((1., 1.))
     else:
-        bounds.append((1, np.inf))
+        bounds.append((1., np.inf))
 
 # running the optimization routine
 t_i = time.time()
@@ -151,6 +151,7 @@ plt.savefig("reference_media", bbox_inches='tight')   # save the figure to file
 
 # we save the data and the triangulation to plot it later
 dict_to_save = {'sigma': sigma_guess,  # sigma defined in each triangle
-                'sigma_v': sigma_v,
+                'sigma_v': sigma_v,    #
+                'sigma_ref': sigma_vec_projected, 
                 't': t, 'p': p}
 sio.savemat("reference_media.mat",dict_to_save)
